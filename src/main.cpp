@@ -139,13 +139,13 @@ int main(int argc, char *argv[]) {
    // calculate the section size for storage in the PE file
    auto section_size = static_cast<std::uint32_t>(packed.size() + sizeof(std::size_t));
 
-   // re-acquire an NT header pointer since our buffer likely changed addresses
-   // from the resize
-   nt_header = reinterpret_cast<IMAGE_NT_HEADERS64 *>(stub_data.data() + e_lfanew);
-
    // pad the section data with 0s if we aren't on the file alignment boundary
    if (stub_data.size() % file_alignment != 0)
       stub_data.resize(align<std::size_t>(stub_data.size(), file_alignment));
+
+   // re-acquire an NT header pointer since our buffer likely changed addresses
+   // from the resize
+   nt_header = reinterpret_cast<IMAGE_NT_HEADERS64 *>(stub_data.data() + e_lfanew);
 
    // increment the number of sections in the file header
    auto section_index = nt_header->FileHeader.NumberOfSections;
